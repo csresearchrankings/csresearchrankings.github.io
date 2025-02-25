@@ -1,3 +1,28 @@
+# Large data files
+dblp.xml
+dblp.xml.gz
+generated-author-info.csv
+downloads/
+
+# Node modules
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# TypeScript
+*.js.map
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
 faculty-affiliations.csv
 articles.json
 homepages.csv

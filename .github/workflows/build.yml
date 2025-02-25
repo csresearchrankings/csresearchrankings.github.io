@@ -1,0 +1,54 @@
+name: Build CSrankings
+
+on:
+  push:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly builds on Sunday at midnight UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils python3-lxml basex
+          npm install -g typescript google-closure-compiler
+          pip install -r requirements.txt
+          
+      - name: Download and process DBLP data
+        run: |
+          echo "Downloading DBLP XML..."
+          wget https://dblp.org/xml/dblp.xml.gz
+          echo "Extracting DBLP XML..."
+          gunzip dblp.xml.gz
+          echo "Running update-dblp..."
+          make update-dblp
+          echo "Generating author info..."
+          make generated-author-info.csv
+          
+      - name: Build site
+        run: |
+          echo "Building site..."
+          make all
+        
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          force_orphan: true 
