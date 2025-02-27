@@ -56,10 +56,15 @@ jobs:
         run: |
           echo "Building site..."
           make all
+          
+      - name: Clean up large files
+        run: |
+          rm -f dblp.xml dblp.xml.gz dblp-original.xml.gz dblp2.xml dblp2.xml.gz
         
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          force_orphan: true 
+          force_orphan: true
+          exclude_assets: 'dblp.xml,dblp.xml.gz,dblp-original.xml.gz,dblp2.xml,dblp2.xml.gz' 
