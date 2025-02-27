@@ -13,6 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug - List files
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Looking for csrankings-*.csv files:"
+          ls -l csrankings-*.csv || echo "No csrankings-*.csv files found"
+      
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -29,6 +36,10 @@ jobs:
           sudo apt-get install -y libxml2-utils python3-lxml basex libtagsoup-java libxml-commons-resolver1.1-java libjing-java
           npm install -g typescript google-closure-compiler
           pip install -r requirements.txt
+          
+      - name: Create initial files
+        run: |
+          echo "name,affiliation" > faculty-affiliations.csv
           
       - name: Download and process DBLP data
         run: |
